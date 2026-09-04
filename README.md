@@ -1,6 +1,10 @@
 # Progression Gater
 
+![Progression Gater logo](thunderstore/icon.png)
+
 A lightweight, server-wide Valheim progression scheduler. Administrators decide when bosses may be summoned; defeating a boss releases its configured crafting tier for everyone.
+
+Created by **Catosaur**.
 
 Progression Gater is designed for community servers that want a shared release schedule without adopting a large progression overhaul.
 
@@ -30,7 +34,7 @@ This initial version gates boss altars and ordinary crafting recipes. It does no
 Copy `ProgressionGater.dll` into `BepInEx/plugins/` on the server and all clients. Start the server once to generate:
 
 ```text
-BepInEx/config/com.catosvalheim.progressiongater.cfg
+BepInEx/config/com.catosaur.progressiongater.cfg
 ```
 
 The server's rules and state are synchronized to clients. Client-side copies of the rule configuration do not override the server.
@@ -143,7 +147,3 @@ Before the first public release, verify on a dedicated server:
 5. Reconnecting receives the same state.
 6. `pg_lock eikthyr` blocks another summon without relocking Bronze recipes.
 7. A non-admin cannot execute any state-changing command.
-
-## Publishing status
-
-The code is an initial extracted implementation. Before publishing to Thunderstore, choose a license, add a package icon/manifest, and complete the dedicated-server runtime checklist above.
