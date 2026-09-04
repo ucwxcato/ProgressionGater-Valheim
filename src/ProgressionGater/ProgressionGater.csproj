@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <OutputType>Library</OutputType>
+    <LangVersion>latest</LangVersion>
+    <AssemblyName>ProgressionGater</AssemblyName>
+    <RootNamespace>ProgressionGater</RootNamespace>
+    <Version>0.1.0</Version>
+    <Authors>Catosaur</Authors>
+    <Company>Catosaur</Company>
+    <Description>Admin-controlled server-wide boss and crafting progression for Valheim.</Description>
+    <OutputPath>bin/Release/net48/</OutputPath>
+    <GeneratePathProperty>true</GeneratePathProperty>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="BepInEx" HintPath="..\..\lib\BepInEx.dll" Private="false" />
+    <Reference Include="0Harmony" HintPath="..\..\lib\0Harmony20.dll" Private="false" />
+    <Reference Include="UnityEngine" HintPath="..\..\lib\UnityEngine.dll" Private="false" />
+    <Reference Include="UnityEngine.CoreModule" HintPath="..\..\lib\UnityEngine.CoreModule.dll" Private="false" />
+    <Reference Include="assembly_valheim" HintPath="..\..\lib\assembly_valheim.dll" Private="false" />
+    <Reference Include="assembly_utils" HintPath="..\..\lib\assembly_utils.dll" Private="false" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Net.Http" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,98 @@
+using System;
+using System.Linq;
+using HarmonyLib;
+using UnityEngine;
+
+namespace ProgressionGater
+{
+    [HarmonyPatch]
+    internal static class ProgressionPatches
+    {
+        private static float _lastBlockedMessageTime = -999f;
+
+        [HarmonyPatch(typeof(ZRoutedRpc), MethodType.Constructor, typeof(bool))]
+        [HarmonyPostfix]
+        private static void OnRoutedRpcCreated(ZRoutedRpc __instance)
+        {
+            if (__instance == null) return;
+            ProgressionService.ClearServerSnapshot();
+            NetworkManager.Register(__instance);
+        }
+
+        [HarmonyPatch(typeof(ZRoutedRpc), nameof(ZRoutedRpc.AddPeer))]
+        [HarmonyPostfix]
+        private static void OnPeerAdded(ZNetPeer peer)
+        {
+            if (!ProgressionService.IsServer || peer == null) return;
+            ProgressionService.SendToPeer(peer);
+        }
+
+        [HarmonyPatch(typeof(ZoneSystem), "RPC_SetGlobalKey")]
+        [HarmonyPostfix]
+        private static void OnGlobalKeySet(string name)
+        {
+            if (!ProgressionService.IsServer || !ProgressionService.Enabled || string.IsNullOrWhiteSpace(name)) return;
+            try
+            {
+                BossDefinition boss = ProgressionService.Rules.ResolveGlobalKey(name);
+                if (boss == null || !ProgressionService.MarkDefeated(boss)) return;
+                Plugin.Log.LogInfo($"Boss defeat recorded from global key '{name}': {boss.DisplayName}");
+                DiscordWebhook.PostBossDefeated(boss);
+            }
+            catch (Exception ex)
+            {
+                Plugin.Log.LogError($"Boss-defeat processing failed for key '{name}': {ex}");
+            }
+        }
+
+        [HarmonyPatch(typeof(Player), nameof(Player.HaveRequirements), typeof(Recipe), typeof(bool), typeof(int), typeof(int))]
+        [HarmonyPrefix]
+        private static bool OnHaveRequirements(Player __instance, Recipe recipe, ref bool __result)
+        {
+            if (!ProgressionService.GateCrafting || ProgressionService.LocalCanBypass || __instance == null || recipe?.m_item == null)
+                return true;
+
+            BossDefinition blockedBy = ProgressionService.Rules
+                .RequiredBosses(recipe, ProgressionService.MatchIngredients)
+                .FirstOrDefault(boss => !ProgressionService.IsDefeated(boss));
+            if (blockedBy == null) return true;
+
+            if (Time.time - _lastBlockedMessageTime > 2f)
+            {
+                _lastBlockedMessageTime = Time.time;
+                __instance.Message(MessageHud.MessageType.TopLeft,
+                    $"{blockedBy.DisplayName} has not been defeated yet. Defeat this boss to unlock the recipe for everyone.");
+            }
+            __result = false;
+            return false;
+        }
+
+        [HarmonyPatch(typeof(OfferingBowl), nameof(OfferingBowl.UseItem))]
+        [HarmonyPrefix]
+        private static bool OnOfferingBowlUseItem(OfferingBowl __instance, Humanoid user, ref bool __result)
+        {
+            if (!ProgressionService.GateBossSummons || ProgressionService.LocalCanBypass) return true;
+            BossDefinition boss = ProgressionService.Rules.Resolve(__instance);
+            if (boss == null || ProgressionService.IsSummonUnlocked(boss)) return true;
+
+            user?.Message(MessageHud.MessageType.Center,
+                $"{boss.DisplayName} is locked. A server admin must unlock this boss before it can be summoned.");
+            __result = false;
+            return false;
+        }
+
+        [HarmonyPatch(typeof(OfferingBowl), "RPC_SpawnBoss")]
+        [HarmonyPrefix]
+        private static bool OnOfferingBowlSpawnBoss(OfferingBowl __instance, long senderId)
+        {
+            if (!ProgressionService.GateBossSummons) return true;
+            BossDefinition boss = ProgressionService.Rules.Resolve(__instance);
+            if (boss == null || ProgressionService.IsSummonUnlocked(boss) || NetworkManager.CanPeerBypass(senderId)) return true;
+
+            Plugin.Log.LogWarning($"Blocked locked boss summon: boss={boss.Id}, sender={senderId}");
+            NetworkManager.SendMessage(senderId,
+                $"{boss.DisplayName} is locked. A server admin must unlock this boss before it can be summoned.");
+            return false;
+        }
+    }
+}

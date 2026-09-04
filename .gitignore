@@ -1,0 +1,65 @@
+# Build output
+**/bin/
+**/obj/
+artifacts/
+TestResults/
+coverage/
+*.coverage
+*.coveragexml
+
+# Local Valheim/BepInEx reference assemblies
+lib/*.dll
+lib/*.xml
+
+# IDE and editor state
+.vs/
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.DotSettings.user
+_ReSharper*/
+*.resharper
+
+# NuGet and temporary build products
+packages/
+*.nupkg
+*.snupkg
+*.tmp
+*.temp
+*.bak
+*.orig
+
+# Runtime server/client state
+BepInEx/
+worlds/
+worlds_local/
+characters/
+characters_local/
+*.db
+*.db.old
+*.fwl
+*.fwl.old
+*.log
+doorstop_log.txt
+adminlist.txt
+permittedlist.txt
+bannedlist.txt
+
+# Local configs and secrets. Keep committed templates under TEST_SERVER/.
+*.local.cfg
+*.private.cfg
+.env
+.env.*
+!.env.example
+secrets/
+
+# Recoverable live-server snapshots created during local testing
+.server-wipe-backup-*/
+
+# OS metadata
+.DS_Store
+Thumbs.db
+Desktop.ini
