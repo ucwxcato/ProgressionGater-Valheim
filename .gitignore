@@ -33,6 +33,7 @@ packages/
 *.orig
 
 # Runtime server/client state
+TEST_SERVER/
 BepInEx/
 worlds/
 worlds_local/
@@ -48,7 +49,7 @@ adminlist.txt
 permittedlist.txt
 bannedlist.txt
 
-# Local configs and secrets. Keep committed templates under TEST_SERVER/.
+# Local configs and secrets
 *.local.cfg
 *.private.cfg
 .env
