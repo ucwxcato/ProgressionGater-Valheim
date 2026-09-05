@@ -133,3 +133,16 @@ Build output:
 ```text
 src/ProgressionGater/bin/Release/net48/net48/ProgressionGater.dll
 ```
+
+## Thunderstore package
+
+Build and create an upload-ready Thunderstore ZIP with:
+
+```powershell
+.\scripts\package.ps1
+```
+
+The script validates the manifest, assembly version, and 256x256 icon, then
+creates `artifacts/Catosaur-ProgressionGater-<version>.zip`. Upload that ZIP on
+the Valheim community page in Thunderstore. Package files are placed at the ZIP
+root as required; do not wrap them in another directory.
