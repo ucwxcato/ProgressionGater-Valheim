@@ -133,17 +133,3 @@ Build output:
 ```text
 src/ProgressionGater/bin/Release/net48/net48/ProgressionGater.dll
 ```
-
-Reference DLLs and build output are gitignored.
-
-## Runtime test checklist
-
-Before the first public release, verify on a dedicated server:
-
-1. A locked Eikthyr altar rejects a normal player.
-2. `pg_unlock eikthyr` permits the summon and posts one unlock webhook.
-3. Bronze crafting is blocked before the kill.
-4. Killing Eikthyr records the defeat, posts one defeat webhook, and releases Bronze recipes for every connected client.
-5. Reconnecting receives the same state.
-6. `pg_lock eikthyr` blocks another summon without relocking Bronze recipes.
-7. A non-admin cannot execute any state-changing command.
