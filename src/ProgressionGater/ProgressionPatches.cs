@@ -1,15 +1,12 @@
 using System;
 using System.Linq;
 using HarmonyLib;
-using UnityEngine;
 
 namespace ProgressionGater
 {
     [HarmonyPatch]
     internal static class ProgressionPatches
     {
-        private static float _lastBlockedMessageTime = -999f;
-
         [HarmonyPatch(typeof(ZRoutedRpc), MethodType.Constructor, typeof(bool))]
         [HarmonyPostfix]
         private static void OnRoutedRpcCreated(ZRoutedRpc __instance)
@@ -57,12 +54,8 @@ namespace ProgressionGater
                 .FirstOrDefault(boss => !ProgressionService.IsDefeated(boss));
             if (blockedBy == null) return true;
 
-            if (Time.time - _lastBlockedMessageTime > 2f)
-            {
-                _lastBlockedMessageTime = Time.time;
-                __instance.Message(MessageHud.MessageType.TopLeft,
-                    $"{blockedBy.DisplayName} has not been defeated yet. Defeat this boss to unlock the recipe for everyone.");
-            }
+            // HaveRequirements runs continuously while crafting UI is open.
+            // Refuse the locked recipe silently so this check cannot spam HUD notices.
             __result = false;
             return false;
         }
