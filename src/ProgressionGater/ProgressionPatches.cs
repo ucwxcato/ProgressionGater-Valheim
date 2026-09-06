@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using HarmonyLib;
 
 namespace ProgressionGater
@@ -43,20 +42,27 @@ namespace ProgressionGater
         }
 
         [HarmonyPatch(typeof(Player), nameof(Player.HaveRequirements), typeof(Recipe), typeof(bool), typeof(int), typeof(int))]
-        [HarmonyPrefix]
-        private static bool OnHaveRequirements(Player __instance, Recipe recipe, ref bool __result)
+        [HarmonyPostfix]
+        private static void OnHaveRequirements(Player __instance, Recipe recipe, ref bool __result)
         {
-            if (!ProgressionService.GateCrafting || ProgressionService.LocalCanBypass || __instance == null || recipe?.m_item == null)
-                return true;
-
-            BossDefinition blockedBy = ProgressionService.Rules
-                .RequiredBosses(recipe, ProgressionService.MatchIngredients)
-                .FirstOrDefault(boss => !ProgressionService.IsDefeated(boss));
-            if (blockedBy == null) return true;
+            if (__instance == null || ProgressionService.CraftingBlockedBy(recipe) == null) return;
 
             // HaveRequirements runs continuously while crafting UI is open.
             // Refuse the locked recipe silently so this check cannot spam HUD notices.
             __result = false;
+        }
+
+        [HarmonyPatch(typeof(InventoryGui), "DoCrafting", typeof(Player))]
+        [HarmonyPrefix]
+        private static bool OnDoCrafting(Player player, Recipe ___m_craftRecipe)
+        {
+            BossDefinition blockedBy = ProgressionService.CraftingBlockedBy(___m_craftRecipe);
+            if (blockedBy == null) return true;
+
+            player?.Message(MessageHud.MessageType.Center,
+                $"Locked until {blockedBy.DisplayName} has been defeated.");
+            Plugin.Log.LogWarning(
+                $"Blocked locked recipe craft: item={___m_craftRecipe?.m_item?.name ?? "unknown"}, boss={blockedBy.Id}");
             return false;
         }
 

@@ -49,6 +49,13 @@ namespace ProgressionGater
             return boss != null && CurrentDefeats().Contains(boss.Id);
         }
 
+        internal static BossDefinition CraftingBlockedBy(Recipe recipe)
+        {
+            if (!GateCrafting || LocalCanBypass || recipe?.m_item == null) return null;
+            return Rules.RequiredBosses(recipe, MatchIngredients)
+                .FirstOrDefault(boss => !IsDefeated(boss));
+        }
+
         internal static bool Unlock(BossDefinition boss)
         {
             if (!IsServer || boss == null) return false;
@@ -204,4 +211,3 @@ namespace ProgressionGater
         }
     }
 }
-
