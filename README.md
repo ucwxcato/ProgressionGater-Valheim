@@ -121,12 +121,16 @@ Run `pg_webhook_test` after configuring the URL to verify delivery without chang
 
 ## Building
 
-Place the required game/framework references in `lib/`, or use:
+Place the required game/framework references in `lib/`, or use the 1.0-aware setup script. The game and BepInEx files live in separate directories:
 
 ```powershell
-.\scripts\setup-references.ps1 -SourceDirectory "C:\path\to\BepInEx\core"
+.\scripts\setup-references.ps1 `
+  -GameManagedDirectory "C:\Program Files (x86)\Steam\steamapps\common\Valheim\valheim_Data\Managed" `
+  -BepInExCoreDirectory "C:\Program Files (x86)\Steam\steamapps\common\Valheim\BepInEx\core"
 .\scripts\build.ps1
 ```
+
+For a dedicated server, use its BepInEx `core` directory and the client game's `valheim_Data\Managed` directory for the game references. Install BepInExPack Valheim 5.4.2350 on every client and server.
 
 Build output:
 

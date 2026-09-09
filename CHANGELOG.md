@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.0 - 2026-09-09
+
+- Updated the Thunderstore dependency to BepInExPack Valheim 5.4.2350 for Valheim 1.0.
+- Refreshed the documented build workflow for separate BepInEx and Valheim reference locations.
+
 ## 0.1.2 - 2026-09-06
 
 - Enforced boss recipe gates at final craft execution so other crafting patches cannot bypass them.

@@ -1,9 +1,9 @@
 {
   "name": "ProgressionGater",
-  "version_number": "0.1.2",
+  "version_number": "0.2.0",
   "website_url": "https://github.com/ucwxcato/ProgressionGater-Valheim",
   "description": "Admin-controlled server-wide boss unlocks and crafting progression for Valheim.",
   "dependencies": [
-    "denikson-BepInExPack_Valheim-5.4.2333"
+    "denikson-BepInExPack_Valheim-5.4.2350"
   ]
 }
