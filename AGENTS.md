@@ -36,7 +36,7 @@ The dedicated server and client must run the same Valheim network version. A ser
 
 ## Local test server
 
-`TEST_SERVER\start_progressiongater_test.bat` is a local, ignored harness. It rebuilds the plugin, deploys the latest `ProgressionGater.dll` to both the dedicated server and the r2modman `ProgressionGater test` profile, and copies the client's `JereKuusela-Server_devcommands\ServerDevcommands.dll` into the server plugin directory.
+`TEST_SERVER\start_progressiongater_test.bat` is a local, ignored harness. It rebuilds the plugin and deploys the latest `ProgressionGater.dll` to both the dedicated server and the r2modman `ProgressionGater test` profile. ServerDevcommands is not required by Progression Gater and should not be copied to the server while its Valheim 1.0 patch is broken.
 
 The launcher also copies `TEST_SERVER\adminlist.txt` into the server save directory and starts Valheim with `-savedir`. The test admin SteamID64 is `76561198062587799`. Valheim's authoritative admin list is the `adminlist.txt` under the active save directory, not a client-local config. The launcher refuses to start if the server game assembly is older than the refreshed local 1.0 reference.
 

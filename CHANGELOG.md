@@ -1,9 +1,15 @@
 # Changelog
 
+## 0.2.1 - 2026-09-09
+
+- Removed the cheat-gate dependency from `pg_*` commands; server-side admin authorization remains mandatory.
+- Progression Gater commands no longer require ServerDevcommands.
+
 ## 0.2.0 - 2026-09-09
 
 - Updated the Thunderstore dependency to BepInExPack Valheim 5.4.2350 for Valheim 1.0.
 - Refreshed the documented build workflow for separate BepInEx and Valheim reference locations.
+- Registered Progression Gater commands outside Valheim's cheat gate so they do not depend on ServerDevcommands.
 
 ## 0.1.2 - 2026-09-06
 

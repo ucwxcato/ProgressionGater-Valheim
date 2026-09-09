@@ -30,7 +30,11 @@ namespace ProgressionGater
 
         private static void Add(string name, string description, string command)
         {
-            new Terminal.ConsoleCommand(name, description, args => Send(args, command), isCheat: true);
+            // These commands perform their own server-side admin authorization
+            // through the routed RPC. They must not depend on Valheim's cheat
+            // gate, because ServerDevcommands may be unavailable after a game
+            // update and is not the security boundary for this plugin.
+            new Terminal.ConsoleCommand(name, description, args => Send(args, command), isCheat: false);
         }
 
         internal static void RegisterRpcHandlers(ZRoutedRpc rpc)

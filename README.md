@@ -26,7 +26,7 @@ This initial version gates boss altars and ordinary crafting recipes. It does no
 
 - Valheim
 - BepInEx
-- The mod must be installed on the dedicated server and every client.
+- The mod must be installed on the dedicated server and every client. ServerDevcommands is optional; Progression Gater authorizes its own `pg_*` commands against the server admin list.
 
 
 ## Installation
