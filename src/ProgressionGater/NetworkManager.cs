@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using HarmonyLib;
 
 namespace ProgressionGater
@@ -34,9 +35,32 @@ namespace ProgressionGater
         {
             if (peer == null || ZNet.instance == null || !ZNet.instance.IsServer()) return false;
             string host = peer.m_socket?.GetHostName() ?? "";
-            if (host.Length == 0) return false;
-            try { return ZNet.instance.IsAdmin(host); }
-            catch { return false; }
+            string uid = peer.m_uid.ToString();
+            try
+            {
+                // Depending on the backend, Valheim may expose the player's
+                // Steam/platform ID as either the peer UID or socket hostname.
+                if ((host.Length > 0 && ZNet.instance.IsAdmin(host)) || ZNet.instance.IsAdmin(uid))
+                    return true;
+
+                // Fall back to the normalized list Valheim actually loaded.
+                // This also handles platform-ID formatting differences.
+                List<string> admins = ZNet.instance.GetAdminList();
+                foreach (string admin in admins ?? new List<string>())
+                {
+                    if (string.Equals(admin?.Trim(), uid, StringComparison.OrdinalIgnoreCase) ||
+                        (host.Length > 0 && string.Equals(admin?.Trim(), host, StringComparison.OrdinalIgnoreCase)))
+                        return true;
+                }
+
+                Plugin.Log.LogWarning($"Admin check denied for peer {uid}; socket identity '{host}'; loaded admins: {string.Join(",", admins ?? new List<string>())}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Plugin.Log.LogWarning($"Admin check failed for peer {uid}: {ex.Message}");
+                return false;
+            }
         }
 
         internal static bool CanPeerBypass(long peerId)

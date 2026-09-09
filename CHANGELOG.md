@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.2 - 2026-09-09
+
+- Made server admin authorization accept Valheim peer UID, socket identity, and the loaded admin-list identities.
+
 ## 0.2.1 - 2026-09-09
 
 - Removed the cheat-gate dependency from `pg_*` commands; server-side admin authorization remains mandatory.
