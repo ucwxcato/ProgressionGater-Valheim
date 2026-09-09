@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.3 - 2026-09-09
+
+- Updated Valheim 1.0 admin-list handling to use the `V_<steamid64>` format.
+
 ## 0.2.2 - 2026-09-09
 
 - Made server admin authorization accept Valheim peer UID, socket identity, and the loaded admin-list identities.

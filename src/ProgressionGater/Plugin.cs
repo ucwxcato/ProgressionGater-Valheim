@@ -11,7 +11,7 @@ namespace ProgressionGater
     {
         public const string Guid = "com.catosaur.progressiongater";
         public const string Name = "Progression Gater";
-        public const string Version = "0.2.2";
+        public const string Version = "0.2.3";
 
         private Harmony _harmony;
         private FileSystemWatcher _configWatcher;

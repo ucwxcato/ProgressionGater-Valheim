@@ -36,11 +36,15 @@ namespace ProgressionGater
             if (peer == null || ZNet.instance == null || !ZNet.instance.IsServer()) return false;
             string host = peer.m_socket?.GetHostName() ?? "";
             string uid = peer.m_uid.ToString();
+            string valheimUid = "V_" + uid;
             try
             {
                 // Depending on the backend, Valheim may expose the player's
                 // Steam/platform ID as either the peer UID or socket hostname.
-                if ((host.Length > 0 && ZNet.instance.IsAdmin(host)) || ZNet.instance.IsAdmin(uid))
+                // Valheim 1.0 stores Steam IDs in adminlist.txt as V_<id>.
+                if ((host.Length > 0 && ZNet.instance.IsAdmin(host)) ||
+                    ZNet.instance.IsAdmin(valheimUid) ||
+                    ZNet.instance.IsAdmin(uid))
                     return true;
 
                 // Fall back to the normalized list Valheim actually loaded.
@@ -48,8 +52,9 @@ namespace ProgressionGater
                 List<string> admins = ZNet.instance.GetAdminList();
                 foreach (string admin in admins ?? new List<string>())
                 {
-                    if (string.Equals(admin?.Trim(), uid, StringComparison.OrdinalIgnoreCase) ||
-                        (host.Length > 0 && string.Equals(admin?.Trim(), host, StringComparison.OrdinalIgnoreCase)))
+                    if (SameAdminIdentity(admin, uid) ||
+                        SameAdminIdentity(admin, valheimUid) ||
+                        (host.Length > 0 && SameAdminIdentity(admin, host)))
                         return true;
                 }
 
@@ -61,6 +66,20 @@ namespace ProgressionGater
                 Plugin.Log.LogWarning($"Admin check failed for peer {uid}: {ex.Message}");
                 return false;
             }
+        }
+
+        private static bool SameAdminIdentity(string left, string right)
+        {
+            if (string.IsNullOrWhiteSpace(left) || string.IsNullOrWhiteSpace(right)) return false;
+            return string.Equals(NormalizeAdminIdentity(left), NormalizeAdminIdentity(right), StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static string NormalizeAdminIdentity(string identity)
+        {
+            string normalized = identity.Trim();
+            return normalized.StartsWith("V_", StringComparison.OrdinalIgnoreCase)
+                ? normalized.Substring(2)
+                : normalized;
         }
 
         internal static bool CanPeerBypass(long peerId)
